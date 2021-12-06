@@ -67,8 +67,11 @@ class _FutureLoadingBuilderState<T> extends State<FutureLoadingBuilder<T?>> {
           case ConnectionState.none:
           case ConnectionState.active:
           case ConnectionState.waiting:
-            return widget.loadingIndicator ??
-                const Center(child: CircularProgressIndicator());
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: widget.loadingIndicator ??
+                  const Center(child: CircularProgressIndicator()),
+            );
 
           case ConnectionState.done:
             if (snapshot.hasError) {

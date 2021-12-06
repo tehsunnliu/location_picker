@@ -192,8 +192,7 @@ class LocationPickerState extends State<LocationPicker> {
     }
 
     LocationUtils.getAppHeaders()
-        .then((headers) => http.get(Uri.parse(endpoint),
-            headers: headers as Map<String, String>?))
+        .then((headers) => http.get(Uri.parse(endpoint), headers: headers))
         .then((response) {
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
@@ -242,8 +241,7 @@ class LocationPickerState extends State<LocationPicker> {
         '&language=${widget.language}';
 
     LocationUtils.getAppHeaders()
-        .then((headers) => http.get(Uri.parse(endpoint),
-            headers: headers as Map<String, String>?))
+        .then((headers) => http.get(Uri.parse(endpoint), headers: headers))
         .then((response) {
       if (response.statusCode == 200) {
         Map<String, dynamic> location =
@@ -316,7 +314,7 @@ class LocationPickerState extends State<LocationPicker> {
                 "key=${widget.apiKey}&"
                 "location=${latLng.latitude},${latLng.longitude}&radius=150"
                 "&language=${widget.language}"),
-            headers: headers as Map<String, String>?))
+            headers: headers))
         .then((response) {
       if (response.statusCode == 200) {
         nearbyPlaces.clear();
@@ -353,8 +351,7 @@ class LocationPickerState extends State<LocationPicker> {
             "https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng.latitude},${latLng.longitude}"
             "&key=${widget.apiKey}"
             "&language=${widget.language}"),
-        headers: await (LocationUtils.getAppHeaders()
-            as FutureOr<Map<String, String>?>));
+        headers: await LocationUtils.getAppHeaders());
 
     if (response.statusCode == 200) {
       Map<String, dynamic> responseJson = jsonDecode(response.body);

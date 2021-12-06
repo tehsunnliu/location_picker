@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
-import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:location_picker/generated/l10n.dart' as generated;
+import 'package:location_picker/location_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'generated/l10n.dart';
+
+void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -15,45 +17,62 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion = 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
+  LocationResult? _pickedLocation;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Location Picker',
+      localizationsDelegates: const [
+        generated.S.delegate,
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
+      supportedLocales: const <Locale>[
+        Locale('en', ''),
+        Locale('ar', ''),
+        Locale('pt', ''),
+        Locale('tr', ''),
+        Locale('es', ''),
+        Locale('it', ''),
+        Locale('ru', ''),
+      ],
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('location picker'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        body: Builder(builder: (context) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () async {
+                    LocationResult? result = await showLocationPicker(
+                      context,
+                      '<YOUR_GOOGLE_MAP_API_KEY>',
+                      initialCenter: const LatLng(31.1975844, 29.9598339),
+                      myLocationButtonEnabled: true,
+                      layersButtonEnabled: true,
+                      desiredAccuracy: LocationAccuracy.best,
+                      // automaticallyAnimateToCurrentLocation: true,
+                      // mapStylePath: 'assets/mapStyle.json',
+                      // requiredGPS: true,
+                      // countries: ['AE', 'NG']
+                      // resultCardAlignment: Alignment.bottomCenter,
+                    );
+                    debugPrint("result = $result");
+                    setState(() => _pickedLocation = result);
+                  },
+                  child: const Text('Pick location'),
+                ),
+                Text(_pickedLocation.toString()),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

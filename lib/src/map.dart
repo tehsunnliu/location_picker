@@ -240,101 +240,114 @@ class MapPickerState extends State<MapPicker> {
   Widget locationCard() {
     return Align(
       alignment: widget.resultCardAlignment ?? Alignment.bottomCenter,
-      child: Padding(
-        padding: widget.resultCardPadding ?? const EdgeInsets.all(16.0),
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          child: Consumer<LocationProvider>(
-              builder: (context, locationProvider, _) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Wrap(
-                children: [
-                  Column(
-                    children: [
-                      FutureLoadingBuilder<Map<String, String?>>(
-                        future: getAddress(locationProvider.lastIdleLocation),
-                        mutable: true,
-                        loadingIndicator: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const <Widget>[
-                            CircularProgressIndicator(),
-                          ],
-                        ),
-                        builder: (context, data) {
-                          _address = data["address"];
-                          _placeId = data["placeId"];
-                          return Padding(
-                            padding:
-                                const EdgeInsets.only(top: 7.0, bottom: 8.0),
-                            child: Text(
-                              _address ?? S.of(context).no_result_found,
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          );
-                        },
-                      ),
-                      Row(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).canvasColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black,
+              blurRadius: 2.0,
+              spreadRadius: 0.0,
+              offset: Offset(2.0, 2.0), // shadow direction: bottom right
+            )
+          ],
+        ),
+        // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child:
+            Consumer<LocationProvider>(builder: (context, locationProvider, _) {
+          return Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Wrap(
+              children: [
+                Column(
+                  children: [
+                    FutureLoadingBuilder<Map<String, String>?>(
+                      future: getAddress(locationProvider.lastIdleLocation),
+                      mutable: true,
+                      loadingIndicator: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              elevation: 1,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              primary: widget.selectButtonColor ??
-                                  Theme.of(context)
-                                      .buttonTheme
-                                      .colorScheme!
-                                      .primary,
-                            ),
-                            child: Text(
-                              widget.selectButtonText ?? "USE THIS LOCATION",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: widget.selectButtonFontColor ??
-                                    Theme.of(context)
-                                        .accentTextTheme
-                                        .button!
-                                        .color,
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop({
-                                'location': LocationResult(
-                                  latLng: locationProvider.lastIdleLocation,
-                                  address: _address,
-                                  placeId: _placeId,
-                                )
-                              });
-                            },
-                          ),
+                        children: const <Widget>[
+                          CircularProgressIndicator(),
                         ],
                       ),
-                    ],
-                  )
-                ],
-              ),
-            );
-          }),
-        ),
+                      builder: (context, data) {
+                        _address = data?["address"];
+                        _placeId = data?["placeId"];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Text(
+                            _address ?? S.of(context).no_result_found,
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            style: const TextStyle(
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                        );
+                      },
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 1,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            primary: widget.selectButtonColor ??
+                                Theme.of(context)
+                                    .buttonTheme
+                                    .colorScheme!
+                                    .primary,
+                          ),
+                          child: Text(
+                            widget.selectButtonText ?? "USE THIS LOCATION",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: widget.selectButtonFontColor ??
+                                  Theme.of(context)
+                                      .textTheme
+                                      .button
+                                      ?.foreground
+                                      ?.color,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop({
+                              'location': LocationResult(
+                                latLng: locationProvider.lastIdleLocation,
+                                address: _address,
+                                placeId: _placeId,
+                              )
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
 
   /// Returns place_id and formatted_address or throws an error
-  Future<Map<String, String?>> getAddress(LatLng? location) async {
+  Future<Map<String, String>?> getAddress(LatLng? location) async {
     final endPoint =
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}'
         '&key=${widget.apiKey}&language=${widget.language}';
 
-    var response = jsonDecode((await http.get(Uri.parse(endPoint),
-            headers: await (LocationUtils.getAppHeaders()
-                as FutureOr<Map<String, String>?>)))
+    final response = jsonDecode((await http.get(Uri.parse(endPoint),
+            headers: await LocationUtils.getAppHeaders()))
         .body);
 
     return {
