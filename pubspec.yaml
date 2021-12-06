@@ -13,7 +13,6 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-    version: ^0.0.0
   geolocator: ^8.0.0
   google_maps_flutter: ^2.1.1
   http: ^0.13.4
@@ -65,3 +64,6 @@ flutter:
   #
   # For details regarding fonts in packages, see
   # https://flutter.dev/custom-fonts/#from-packages
+
+flutter_intl:
+  enabled: true

@@ -1,13 +1,6 @@
+library location_picker;
 
-import 'dart:async';
-
-import 'package:flutter/services.dart';
-
-class LocationPicker {
-  static const MethodChannel _channel = MethodChannel('location_picker');
-
-  static Future<String?> get platformVersion async {
-    final String? version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-}
+export 'src/location_picker.dart';
+export 'src/model/location_result.dart';
+export 'src/utils/location_utils.dart';
+export 'package:geolocator/geolocator.dart';
