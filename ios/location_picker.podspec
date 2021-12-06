@@ -5,13 +5,13 @@
 Pod::Spec.new do |s|
   s.name             = 'location_picker'
   s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
+  s.summary          = 'Location Picker Plugin from Google Maps based on google_maps_flutter.'
   s.description      = <<-DESC
-A new flutter plugin project.
+  Location Picker Plugin from Google Maps based on google_maps_flutter.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/tehsunnliu/location_picker'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Sunns Technologies' => 'tehsunnliu@sunnstech.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
