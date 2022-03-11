@@ -310,42 +310,49 @@ class MapPickerState extends State<MapPicker> {
               children: [
                 Column(
                   children: [
-                    locationProvider.lastIdleLocation == null
-                        ? Padding(
-                            padding: const EdgeInsets.only(bottom: 4.0),
-                            child: Text(
-                              S.of(context).finding_place,
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis),
-                            ),
-                          )
-                        : FutureLoadingBuilder<Map<String, String>?>(
-                            future:
-                                getAddress(locationProvider.lastIdleLocation),
-                            mutable: true,
-                            loadingIndicator: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const <Widget>[
-                                CircularProgressIndicator(),
-                              ],
-                            ),
-                            builder: (context, data) {
-                              _address = data?["address"];
-                              _placeId = data?["placeId"];
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 4.0),
-                                child: Text(
-                                  _address ?? S.of(context).no_result_found,
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  style: const TextStyle(
-                                      overflow: TextOverflow.ellipsis),
-                                ),
-                              );
-                            },
+                    FutureLoadingBuilder<dynamic>(
+                      future: getAddress(locationProvider.lastIdleLocation),
+                      mutable: true,
+                      loadingIndicator: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const <Widget>[
+                          CircularProgressIndicator(),
+                        ],
+                      ),
+                      builder: (context, data) {
+                        if (data == null) {
+                          return Text(
+                            S.of(context).finding_place,
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            style: const TextStyle(
+                                overflow: TextOverflow.ellipsis),
+                          );
+                        }
+                        String message;
+                        bool _hasError = false;
+                        if (data['results'].isEmpty) {
+                          message = data['error_message'];
+                          _hasError = true;
+                        } else {
+                          _address = data['results'][0]["address"];
+                          _placeId = data['results'][0]["placeId"];
+                          message = _address ?? S.of(context).no_result_found;
+                        }
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Text(
+                            message,
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            style: TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                color: _hasError ? Colors.red : null),
                           ),
+                        );
+                      },
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -397,10 +404,11 @@ class MapPickerState extends State<MapPicker> {
   }
 
   /// Returns place_id and formatted_address or throws an error
-  Future<Map<String, String>?> getAddress(LatLng? location) async {
+  Future<dynamic> getAddress(LatLng? location) async {
     if (location == null) {
-      return {};
+      return null;
     }
+
     final endPoint =
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}'
         '&key=${widget.apiKey}&language=${widget.language}';
@@ -408,12 +416,7 @@ class MapPickerState extends State<MapPicker> {
     final response = await http.get(Uri.parse(endPoint),
         headers: await LocationUtils.getAppHeaders());
 
-    final data = jsonDecode(response.body);
-
-    return {
-      "placeId": data['results'][0]['place_id'],
-      "address": data['results'][0]['formatted_address']
-    };
+    return jsonDecode(response.body);
   }
 
   Widget pin() {
