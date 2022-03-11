@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:geolocator/geolocator.dart';
@@ -311,30 +310,42 @@ class MapPickerState extends State<MapPicker> {
               children: [
                 Column(
                   children: [
-                    FutureLoadingBuilder<Map<String, String>?>(
-                      future: getAddress(locationProvider.lastIdleLocation),
-                      mutable: true,
-                      loadingIndicator: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
-                          CircularProgressIndicator(),
-                        ],
-                      ),
-                      builder: (context, data) {
-                        _address = data?["address"];
-                        _placeId = data?["placeId"];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            _address ?? S.of(context).no_result_found,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            style: const TextStyle(
-                                overflow: TextOverflow.ellipsis),
+                    locationProvider.lastIdleLocation == null
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 4.0),
+                            child: Text(
+                              S.of(context).finding_place,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              style: const TextStyle(
+                                  overflow: TextOverflow.ellipsis),
+                            ),
+                          )
+                        : FutureLoadingBuilder<Map<String, String>?>(
+                            future:
+                                getAddress(locationProvider.lastIdleLocation),
+                            mutable: true,
+                            loadingIndicator: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const <Widget>[
+                                CircularProgressIndicator(),
+                              ],
+                            ),
+                            builder: (context, data) {
+                              _address = data?["address"];
+                              _placeId = data?["placeId"];
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 4.0),
+                                child: Text(
+                                  _address ?? S.of(context).no_result_found,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  style: const TextStyle(
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -387,17 +398,21 @@ class MapPickerState extends State<MapPicker> {
 
   /// Returns place_id and formatted_address or throws an error
   Future<Map<String, String>?> getAddress(LatLng? location) async {
+    if (location == null) {
+      return {};
+    }
     final endPoint =
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}'
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}'
         '&key=${widget.apiKey}&language=${widget.language}';
 
-    final response = jsonDecode((await http.get(Uri.parse(endPoint),
-            headers: await LocationUtils.getAppHeaders()))
-        .body);
+    final response = await http.get(Uri.parse(endPoint),
+        headers: await LocationUtils.getAppHeaders());
+
+    final data = jsonDecode(response.body);
 
     return {
-      "placeId": response['results'][0]['place_id'],
-      "address": response['results'][0]['formatted_address']
+      "placeId": data['results'][0]['place_id'],
+      "address": data['results'][0]['formatted_address']
     };
   }
 
