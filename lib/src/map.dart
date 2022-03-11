@@ -335,8 +335,8 @@ class MapPickerState extends State<MapPicker> {
                           message = data['error_message'];
                           _hasError = true;
                         } else {
-                          _address = data['results'][0]["address"];
-                          _placeId = data['results'][0]["placeId"];
+                          _address = data['results'][0]["formatted_address"];
+                          _placeId = data['results'][0]["place_id"];
                           message = _address ??
                               AppLocalizations.of(context).noResultFound;
                         }
