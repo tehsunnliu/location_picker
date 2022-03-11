@@ -35,15 +35,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 MaterialApp(
   localizationsDelegates: const [
-    generated.S.delegate,
+    AppLocalizations.delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalWidgetsLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
   ],
-  supportedLocales: const <Locale>[
-    Locale('en', ''),
-    Locale('ar', ''),
-  ],
+  supportedLocales: AppLocalizations.supportedLocales,
   home: ...
 )
 ```

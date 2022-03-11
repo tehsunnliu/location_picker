@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:location_picker/generated/l10n.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:location_picker/src/map.dart';
 import 'package:location_picker/src/providers/location_provider.dart';
 import 'package:location_picker/src/rich_suggestion.dart';
@@ -152,7 +152,7 @@ class LocationPickerState extends State<LocationPicker> {
                   const SizedBox(width: 24),
                   Expanded(
                     child: Text(
-                      S.of(context).finding_place,
+                      AppLocalizations.of(context).findingPlace,
                       style: const TextStyle(fontSize: 16),
                     ),
                   )
@@ -202,7 +202,7 @@ class LocationPickerState extends State<LocationPicker> {
 
         if (predictions.isEmpty) {
           AutoCompleteItem aci = AutoCompleteItem();
-          aci.text = S.of(context).no_result_found;
+          aci.text = AppLocalizations.of(context).noResultFound;
           aci.offset = 0;
           aci.length = 0;
 

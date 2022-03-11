@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:location_picker/generated/l10n.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'log.dart';
 
@@ -80,14 +80,14 @@ class _FutureLoadingBuilderState<T> extends State<FutureLoadingBuilder<T?>> {
                 d('SocketException-> ${error.message}');
                 return Center(
                   child: Text(
-                    S.of(context).please_check_your_connection,
+                    AppLocalizations.of(context).pleaseCheckYourConnection,
                     overflow: TextOverflow.fade,
                   ),
                 );
               } else if (error is PlatformException &&
                   error.code == 'ERROR_GEOCODING_COORDINATES') {
                 return Text(
-                  S.of(context).please_check_your_connection,
+                  AppLocalizations.of(context).pleaseCheckYourConnection,
                   overflow: TextOverflow.fade,
                 );
               } else {

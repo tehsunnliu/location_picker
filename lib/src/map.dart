@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:geolocator/geolocator.dart';
-import 'package:location_picker/generated/l10n.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:location_picker/src/providers/location_provider.dart';
 import 'package:location_picker/src/utils/loading_builder.dart';
 import 'package:location_picker/src/utils/log.dart';
@@ -322,7 +322,7 @@ class MapPickerState extends State<MapPicker> {
                       builder: (context, data) {
                         if (data == null) {
                           return Text(
-                            S.of(context).finding_place,
+                            AppLocalizations.of(context).findingPlace,
                             textAlign: TextAlign.center,
                             maxLines: 2,
                             style: const TextStyle(
@@ -337,7 +337,8 @@ class MapPickerState extends State<MapPicker> {
                         } else {
                           _address = data['results'][0]["address"];
                           _placeId = data['results'][0]["placeId"];
-                          message = _address ?? S.of(context).no_result_found;
+                          message = _address ??
+                              AppLocalizations.of(context).noResultFound;
                         }
 
                         return Padding(
@@ -483,11 +484,12 @@ class MapPickerState extends State<MapPicker> {
             return true;
           },
           child: AlertDialog(
-            title: Text(S.of(context).access_to_location_denied),
-            content: Text(S.of(context).allow_access_to_the_location_services),
+            title: Text(AppLocalizations.of(context).accessToLocationDenied),
+            content: Text(
+                AppLocalizations.of(context).allowAccessToTheLocationServices),
             actions: <Widget>[
               TextButton(
-                child: Text(S.of(context).ok),
+                child: Text(AppLocalizations.of(context).ok),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                   _initCurrentLocation();
@@ -513,13 +515,13 @@ class MapPickerState extends State<MapPicker> {
             return true;
           },
           child: AlertDialog(
-            title: Text(S.of(context).access_to_location_permanently_denied),
-            content: Text(S
-                .of(context)
-                .allow_access_to_the_location_services_from_settings),
+            title: Text(
+                AppLocalizations.of(context).accessToLocationPermanentlyDeined),
+            content: Text(AppLocalizations.of(context)
+                .allowAccessToTheLocationServicesFromSettings),
             actions: <Widget>[
               TextButton(
-                child: Text(S.of(context).ok),
+                child: Text(AppLocalizations.of(context).ok),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                   Geolocator.openAppSettings();

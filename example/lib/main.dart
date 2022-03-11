@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:location_picker/generated/l10n.dart' as generated;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:location_picker/location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import 'generated/l10n.dart';
 
 void main() => runApp(const MyApp());
 
@@ -24,21 +22,12 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Location Picker',
       localizationsDelegates: const [
-        generated.S.delegate,
-        S.delegate,
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-      supportedLocales: const <Locale>[
-        Locale('en', ''),
-        Locale('ar', ''),
-        Locale('pt', ''),
-        Locale('tr', ''),
-        Locale('es', ''),
-        Locale('it', ''),
-        Locale('ru', ''),
-      ],
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('location picker'),
