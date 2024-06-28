@@ -313,9 +313,9 @@ class MapPickerState extends State<MapPicker> {
                     FutureLoadingBuilder<dynamic>(
                       future: getAddress(locationProvider.lastIdleLocation),
                       mutable: true,
-                      loadingIndicator: Row(
+                      loadingIndicator: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
+                        children: <Widget>[
                           CircularProgressIndicator(),
                         ],
                       ),
@@ -330,10 +330,10 @@ class MapPickerState extends State<MapPicker> {
                           );
                         }
                         String message;
-                        bool _hasError = false;
+                        bool hasError = false;
                         if (data['results'].isEmpty) {
                           message = data['error_message'];
-                          _hasError = true;
+                          hasError = true;
                         } else {
                           _address = data['results'][0]["formatted_address"];
                           _placeId = data['results'][0]["place_id"];
@@ -349,7 +349,7 @@ class MapPickerState extends State<MapPicker> {
                             maxLines: 2,
                             style: TextStyle(
                                 overflow: TextOverflow.ellipsis,
-                                color: _hasError ? Colors.red : null),
+                                color: hasError ? Colors.red : null),
                           ),
                         );
                       },
@@ -364,7 +364,7 @@ class MapPickerState extends State<MapPicker> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
-                            primary: widget.selectButtonColor ??
+                            backgroundColor: widget.selectButtonColor ??
                                 Theme.of(context)
                                     .buttonTheme
                                     .colorScheme!
@@ -377,7 +377,7 @@ class MapPickerState extends State<MapPicker> {
                               color: widget.selectButtonFontColor ??
                                   Theme.of(context)
                                       .textTheme
-                                      .button
+                                      .labelLarge
                                       ?.foreground
                                       ?.color,
                             ),
@@ -575,12 +575,12 @@ class _MapFabs extends StatelessWidget {
                 onPressed: onToggleMapTypePressed,
                 materialTapTargetSize: MaterialTapTargetSize.padded,
                 mini: true,
+                heroTag: "layers",
+                backgroundColor: layersButtonColor,
                 child: Icon(
                   Icons.layers,
                   color: layersIconColor,
                 ),
-                heroTag: "layers",
-                backgroundColor: layersButtonColor,
               ),
             if (myLocationButtonEnabled!)
               FloatingActionButton(
@@ -588,12 +588,12 @@ class _MapFabs extends StatelessWidget {
                 onPressed: onMyLocationPressed,
                 materialTapTargetSize: MaterialTapTargetSize.padded,
                 mini: true,
+                heroTag: "myLocation",
+                backgroundColor: myLocationButtonColor,
                 child: Icon(
                   Icons.my_location,
                   color: myLocationIconColor,
                 ),
-                heroTag: "myLocation",
-                backgroundColor: myLocationButtonColor,
               ),
           ],
         ),

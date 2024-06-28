@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
                   onPressed: () async {
                     LocationResult? result = await showLocationPicker(
                       context,
-                      '<YOUR_GOOGLE_MAP_API_KEY>',
+                      'AIzaSyBNXOQrlQfnXQgL7yoQQoRUDnUsU0z4frc',
                       initialCenter: const LatLng(31.1975844, 29.9598339),
                       myLocationButtonEnabled: true,
                       layersButtonEnabled: true,
